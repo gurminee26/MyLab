@@ -45,7 +45,7 @@ pipeline{
             }
         }
 
-        // Stage4 : Print some information
+        // Stage 4 : Print some information
         stage ('Print Environment variables'){
                     steps {
                         echo "Artifact ID is '${ArtifactId}'"
@@ -55,27 +55,53 @@ pipeline{
                     }
                 }
 
-        // Stage5: Deploying
-        stage ('Deploy'){
+        // Stage 5 : Deploying the build artifact to Apache Tomcat
+        stage ('Deploy to Tomcat'){
             steps {
-                echo ' deploying......'
-
+                echo "Deploying ...."
+                sshPublisher(publishers: 
+                [sshPublisherDesc(
+                    configName: 'Ansible_Controller', 
+                    transfers: [
+                        sshTransfer(
+                                cleanRemote:false,
+                                execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy_as_tomcat_user.yaml -i /opt/playbooks/hosts',
+                                execTimeout: 120000
+                        )
+                    ], 
+                    usePromotionTimestamp: false, 
+                    useWorkspaceInPromotion: false, 
+                    verbose: false)
+                    ])
+            
             }
         }
 
-        // Stage6: Publish the source code to Sonarqube
-        stage ('Sonarqube Analysis'){
+    // Stage 6 : Deploying the build artifact to Docker
+        stage ('Deploy to Docker'){
             steps {
-                echo ' Source code published to Sonarqube for SCA......'
-                withSonarQubeEnv('sonarqube'){ // You can override the credential to be used
-                     sh 'mvn sonar:sonar'
-                }
-
+                echo "Deploying ...."
+                sshPublisher(publishers: 
+                [sshPublisherDesc(
+                    configName: 'Ansible_Controller', 
+                    transfers: [
+                        sshTransfer(
+                                cleanRemote:false,
+                                execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy_docker.yaml -i /opt/playbooks/hosts',
+                                execTimeout: 120000
+                        )
+                    ], 
+                    usePromotionTimestamp: false, 
+                    useWorkspaceInPromotion: false, 
+                    verbose: false)
+                    ])
+            
             }
         }
 
-        
-        
+
+
+
     }
 
 }
