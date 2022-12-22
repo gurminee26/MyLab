@@ -5,9 +5,9 @@ pipeline{
         maven 'maven'
     }
     environment {
-        ArtifactId = readMavenPOM().getArtifactID()
-        Version = readMavenPOM().getVersion()
-        Name = readMavenPOM().getName()
+        ArtifactId = readMavenPom().getArtifactID()
+        Version = readMavenPom().getVersion()
+        Name = readMavenPom().getName()
     }
 
     stages {
@@ -52,8 +52,8 @@ pipeline{
                         echo "Version is '${Version}'"
                         echo "GroupID is '${GroupId}'"
                         echo "Name is '${Name}'"
-            }
-        }
+                    }
+                }
 
         // Stage5: Deploying
         stage ('Deploy'){
