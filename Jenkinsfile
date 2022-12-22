@@ -5,9 +5,9 @@ pipeline{
         maven 'maven'
     }
     environment {
-        ArtifactId = readMavenPom().getArtifactID()
-        Version = readMavenPom().getVersion()
-        Name = readMavenPom().getName()
+        ArtifactId = readMavenPom().setArtifactID()
+        Version = readMavenPom().setVersion()
+        Name = readMavenPom().setName()
     }
 
     stages {
@@ -77,7 +77,7 @@ pipeline{
             }
         }
 
-    // Stage 6 : Deploying the build artifact to Docker
+        // Stage 6 : Deploying the build artifact to Docker
         stage ('Deploy to Docker'){
             steps {
                 echo "Deploying ...."
