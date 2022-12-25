@@ -67,18 +67,21 @@ pipeline{
                 sshPublisher(publishers: 
                 [sshPublisherDesc(
                     configName: 'Ansible_Controller', 
-                    transfers: [
-                        sshTransfer(
-                                cleanRemote:false,
-                                execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy_as_tomcat_user.yaml -i /opt/playbooks/hosts',
-                                execTimeout: 120000
-                        )
-                    ], 
+                    transfers: [sshTransfer(cleanRemote: false, excludes: '', 
+                    execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy.yaml -i /opt/playbooks/hosts', 
+                    execTimeout: 120000, 
+                    flatten: false, 
+                    makeEmptyDirs: false, 
+                    noDefaultExcludes: false, 
+                    patternSeparator: '[, ]+', 
+                    remoteDirectory: '', 
+                    remoteDirectorySDF: false, 
+                    removePrefix: '', 
+                    sourceFiles: '')], 
                     usePromotionTimestamp: false, 
                     useWorkspaceInPromotion: false, 
                     verbose: false)
                     ])
-            
             }
         }
 
